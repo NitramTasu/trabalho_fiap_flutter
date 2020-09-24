@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "538261106533",
+    "firebase_url": "https://angular-6de12.firebaseio.com",
+    "project_id": "angular-6de12",
+    "storage_bucket": "angular-6de12.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:538261106533:android:4e3e90355ca5735820bb8c",
+        "android_client_info": {
+          "package_name": "com.example.trabalho_fiap_flutter"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "538261106533-7iief9947t678l2ppbll786jfv3k6ssh.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA3ytbbxJp8F_DfukVM7RGCxSNmiyg6mOA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "538261106533-7iief9947t678l2ppbll786jfv3k6ssh.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

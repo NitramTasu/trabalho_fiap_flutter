@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart' hide Router;
 
 import 'package:flutter/services.dart';
@@ -137,25 +138,11 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
             ),
-            Container(
-              margin: EdgeInsets.only(left: 10, right: 10),
-              height: 40,
-              width: 100,
-              child: RaisedButton(
-                child: FutureBuilder(
-                  future: checkAdded(item),
-                  builder:
-                      (BuildContext context, AsyncSnapshot<String> snapshot) {
-                    if (snapshot.hasData) {
-                      return Text(snapshot.data);
-                    } else {
-                      return Text("Nada");
-                    }
-                  },
-                ),
-                onPressed: () => {addCharacter(item)},
-              ),
-            ),
+            buildPersistButton(item, "Floor", () => checkFloorAdded(item),
+                () => addInFloor(item)),
+            buildPersistButton(item, "Firestone",
+                () => checkFirestoneAdded(item), () => addInFirestone(item)),
+            //buildPersistButton(item),
             SizedBox(
               height: 50,
             )
@@ -163,20 +150,25 @@ class _HomePageState extends State<HomePage> {
         ));
   }
 
-  Future<String> checkAdded(Character item) async {
+  Future<bool> checkFloorAdded(Character item) async {
     Character character =
         await characterDao.findCharacterById(item.characterId);
-    if (character == null) {
-      return 'Add';
-    } else {
-      return 'Adicionado';
-    }
+    return character != null;
   }
 
-  void addCharacter(Character item) {
+  Future<bool> checkFirestoneAdded(Character item) async {
+    Character character =
+        await characterDao.findCharacterById(item.characterId);
+    return character != null;
+  }
+
+  void addInFloor(Character item) {
+    print('item' + item.description);
+
     characterDao.findCharacterById(item.characterId).then((character) {
       if (character == null) {
         characterDao.insertCharacter(item);
+        addInFirestone(item);
       } else {
         characterDao.deleteCharacter(item.characterId);
       }
@@ -187,5 +179,61 @@ class _HomePageState extends State<HomePage> {
       });
       setState(() {});
     });
+  }
+
+  void addInFirestone(Character item) {
+    CollectionReference characters =
+        Firestore.instance.collection('characters');
+
+    characters
+        .add({
+          'characterId': item.characterId, // John Doe
+          'name': item.name, // John Doe
+          'description': item.description, // John Doe
+          'urlImage': item.urlImage, // John Doe
+        })
+        .then((value) => print("User Added"))
+        .catchError((error) => print("Failed to add user: $error"));
+  }
+
+  void removeFromFirestone(Character item) {
+    CollectionReference characters =
+        Firestore.instance.collection('characters');
+
+    characters
+        .add({
+          'description': item.description, // John Doe
+        })
+        .then((value) => print("User Added"))
+        .catchError((error) => print("Failed to add user: $error"));
+  }
+
+  Widget buildPersistButton(
+    Character item,
+    String label,
+    Function actionF,
+    Function onPressedEvent,
+  ) {
+    Future<bool> callAsyncFetch() => actionF();
+    return Container(
+      margin: EdgeInsets.only(left: 10, right: 10),
+      height: 40,
+      width: 100,
+      child: RaisedButton(
+        child: FutureBuilder(
+          future: callAsyncFetch(),
+          builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
+            if (snapshot.hasData) {
+              return snapshot.data
+                  ? Text("Adicionado ao $label")
+                  : Text("Não Adicionado ao $label");
+            } else {
+              return Text("Erro");
+            }
+          },
+        ),
+        onPressed: onPressedEvent,
+      ),
+    );
   }
 }
