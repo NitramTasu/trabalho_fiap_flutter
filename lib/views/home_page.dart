@@ -157,9 +157,20 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future<bool> checkFirestoneAdded(Character item) async {
-    Character character =
-        await characterDao.findCharacterById(item.characterId);
-    return character != null;
+    CollectionReference collection =
+        Firestore.instance.collection('characters');
+
+    QuerySnapshot query = await collection
+        .where('characterId', isEqualTo: item.characterId)
+        .getDocuments();
+
+    if (query.documents.length > 0) {
+      print('teste verdade');
+      return true;
+    } else {
+      print('teste falso');
+      return false;
+    }
   }
 
   void addInFloor(Character item) {
@@ -185,15 +196,15 @@ class _HomePageState extends State<HomePage> {
     CollectionReference characters =
         Firestore.instance.collection('characters');
 
-    characters
-        .add({
-          'characterId': item.characterId, // John Doe
-          'name': item.name, // John Doe
-          'description': item.description, // John Doe
-          'urlImage': item.urlImage, // John Doe
-        })
-        .then((value) => print("User Added"))
-        .catchError((error) => print("Failed to add user: $error"));
+    characters.add({
+      'characterId': item.characterId,
+      'name': item.name,
+      'description': item.description,
+      'urlImage': item.urlImage,
+    }).then((value) {
+      print("Character Added");
+      setState(() {});
+    }).catchError((error) => print("Failed to add character: $error"));
   }
 
   void removeFromFirestone(Character item) {
