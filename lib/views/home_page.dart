@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart' hide Router;
 
 import 'package:flutter/services.dart';
+import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:get_it/get_it.dart';
 import 'package:trabalho_fiap_flutter/dao/characterDao.dart';
 import 'package:trabalho_fiap_flutter/models/character.dart';
@@ -58,6 +59,37 @@ class _HomePageState extends State<HomePage> {
 
     return Scaffold(
       backgroundColor: Colors.black,
+      floatingActionButton: SpeedDial(
+        animatedIcon: AnimatedIcons.menu_close,
+        backgroundColor: Colors.red,
+        animatedIconTheme: IconThemeData(size: 22.0),
+        children: [
+          SpeedDialChild(
+            child: Icon(Icons.accessibility, color: Colors.white),
+            backgroundColor: Colors.deepOrange,
+            onTap: () {
+              print('Salvos no Firestone');
+              //Navigator.pushNamed(context, "/f");
+            },
+            label: 'Salvos no Firestone',
+            labelStyle:
+                TextStyle(fontWeight: FontWeight.w500, color: Colors.white),
+            labelBackgroundColor: Colors.deepOrangeAccent,
+          ),
+          SpeedDialChild(
+            child: Icon(Icons.brush, color: Colors.white),
+            backgroundColor: Colors.black,
+            onTap: () {
+              print('Salvos no Floor');
+              Navigator.pushNamed(context, "/floor");
+            },
+            label: 'Salvos no Floor',
+            labelStyle:
+                TextStyle(fontWeight: FontWeight.w500, color: Colors.white),
+            labelBackgroundColor: Colors.black,
+          ),
+        ],
+      ),
       body: Stack(
         children: <Widget>[
           AnimatedOpacity(
@@ -174,25 +206,20 @@ class _HomePageState extends State<HomePage> {
   }
 
   void addInFloor(Character item) {
-    print('item' + item.description);
+    print('Salvo no Floor');
 
     characterDao.findCharacterById(item.characterId).then((character) {
       if (character == null) {
         characterDao.insertCharacter(item);
-        addInFirestone(item);
       } else {
         characterDao.deleteCharacter(item.characterId);
       }
-      characterDao.findAllCharacteres().then((characteres) {
-        characteres.forEach((item) {
-          print('teste ' + item.name);
-        });
-      });
       setState(() {});
     });
   }
 
   void addInFirestone(Character item) {
+    print('Salvo no Firestore');
     CollectionReference characters =
         Firestore.instance.collection('characters');
 
@@ -236,8 +263,8 @@ class _HomePageState extends State<HomePage> {
           builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
             if (snapshot.hasData) {
               return snapshot.data
-                  ? Text("Adicionado ao $label")
-                  : Text("Não Adicionado ao $label");
+                  ? Text("Remover do $label")
+                  : Text("Adicionar ao $label");
             } else {
               return Text("Erro");
             }
