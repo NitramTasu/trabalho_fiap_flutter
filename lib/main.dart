@@ -1,8 +1,10 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:trabalho_fiap_flutter/mobx/home_controller.dart';
 import 'package:trabalho_fiap_flutter/repositories/home_repository.dart';
+import 'package:trabalho_fiap_flutter/views/firestore_page.dart';
 import 'package:trabalho_fiap_flutter/views/floor_page.dart';
 import 'package:trabalho_fiap_flutter/views/home_page.dart';
 
@@ -28,6 +30,7 @@ class MyApp extends StatelessWidget {
         '/': (context) => HomePage(),
         // When navigating to the "/second" route, build the SecondScreen widget.
         '/floor': (context) => FloorPage(),
+        '/firestore': (context) => FirestorePage(),
         //'/nosql': (context) => ListBooks(),
         //'/firebase': (context) => ListCars(),
       },

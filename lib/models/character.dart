@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:floor/floor.dart';
 
 @entity
@@ -8,6 +9,8 @@ class Character {
   String name;
   String description;
   String urlImage;
+
+  DocumentReference reference;
 
   Character({this.id, this.name, this.description, this.urlImage});
 
@@ -25,4 +28,13 @@ class Character {
         'description': description,
         'thumbnail': urlImage,
       };
+
+  Character.fromMap(Map<String, dynamic> map, {this.reference})
+      : id = map['characterId'],
+        name = map['name'],
+        description = map['description'],
+        urlImage = map['urlImage'];
+
+  Character.fromSnapshot(DocumentSnapshot snapshot)
+      : this.fromMap(snapshot.data, reference: snapshot.reference);
 }

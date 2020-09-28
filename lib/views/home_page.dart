@@ -69,7 +69,7 @@ class _HomePageState extends State<HomePage> {
             backgroundColor: Colors.deepOrange,
             onTap: () {
               print('Salvos no Firestone');
-              //Navigator.pushNamed(context, "/f");
+              Navigator.pushNamed(context, "/firestore");
             },
             label: 'Salvos no Firestone',
             labelStyle:
