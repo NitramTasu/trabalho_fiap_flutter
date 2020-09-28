@@ -27,10 +27,13 @@ class _HomePageState extends State<HomePage> {
   double currentOpacity = 0;
   int moveTop = 250;
   CharacterDao characterDao;
+  static const platform = const MethodChannel('internet/sign');
 
   @override
   void initState() {
     openDataBase();
+
+    bool result = await platform.invokeMethod('isConnected');
 
     homeController = GetIt.instance<HomeController>();
     timer = Timer(Duration(seconds: 3), () {
@@ -84,6 +87,18 @@ class _HomePageState extends State<HomePage> {
               Navigator.pushNamed(context, "/floor");
             },
             label: 'Salvos no Floor',
+            labelStyle:
+                TextStyle(fontWeight: FontWeight.w500, color: Colors.white),
+            labelBackgroundColor: Colors.black,
+          ),
+          SpeedDialChild(
+            child: Icon(Icons.brush, color: Colors.white),
+            backgroundColor: Colors.black,
+            onTap: () async {
+              bool result = await platform.invokeMethod('isConnected');
+              print('Resposta: $result');
+            },
+            label: 'Check internet',
             labelStyle:
                 TextStyle(fontWeight: FontWeight.w500, color: Colors.white),
             labelBackgroundColor: Colors.black,
