@@ -9,6 +9,7 @@ import 'package:get_it/get_it.dart';
 import 'package:trabalho_fiap_flutter/dao/characterDao.dart';
 import 'package:trabalho_fiap_flutter/models/character.dart';
 import 'package:trabalho_fiap_flutter/mobx/home_controller.dart';
+import 'package:trabalho_fiap_flutter/mobx/theme_controller.dart';
 import 'package:trabalho_fiap_flutter/persistence/app_floor_db.dart';
 
 class HomePage extends StatefulWidget {
@@ -23,6 +24,7 @@ class _HomePageState extends State<HomePage> {
   final List<Character> characters = List<Character>();
   List<Character> charactersDB = List<Character>();
   HomeController homeController;
+  ThemeController themeController;
   Timer timer;
   double currentOpacity = 0;
   int moveTop = 250;
@@ -33,9 +35,10 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     openDataBase();
 
-    bool result = await platform.invokeMethod('isConnected');
+    //bool result = await platform.invokeMethod('isConnected');
 
     homeController = GetIt.instance<HomeController>();
+    themeController = GetIt.instance<ThemeController>();
     timer = Timer(Duration(seconds: 3), () {
       setState(() {
         moveTop = 0;
@@ -99,6 +102,21 @@ class _HomePageState extends State<HomePage> {
               print('Resposta: $result');
             },
             label: 'Check internet',
+            labelStyle:
+                TextStyle(fontWeight: FontWeight.w500, color: Colors.white),
+            labelBackgroundColor: Colors.black,
+          ),
+          SpeedDialChild(
+            child: Icon(Icons.brush, color: Colors.white),
+            backgroundColor: Colors.black,
+            onTap: () async {
+              if (themeController.currentThemeType == ThemeType.dark) {
+                themeController.changeTheme(ThemeType.light);
+              } else {
+                themeController.changeTheme(ThemeType.dark);
+              }
+            },
+            label: 'Mudar Tema',
             labelStyle:
                 TextStyle(fontWeight: FontWeight.w500, color: Colors.white),
             labelBackgroundColor: Colors.black,

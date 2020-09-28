@@ -10,6 +10,7 @@ class Character {
   String description;
   String urlImage;
 
+  @ignore
   DocumentReference reference;
 
   Character({this.id, this.name, this.description, this.urlImage});
