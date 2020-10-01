@@ -9,8 +9,9 @@ import 'package:get_it/get_it.dart';
 import 'package:trabalho_fiap_flutter/dao/characterDao.dart';
 import 'package:trabalho_fiap_flutter/models/character.dart';
 import 'package:trabalho_fiap_flutter/mobx/home_controller.dart';
-import 'package:trabalho_fiap_flutter/mobx/theme_controller.dart';
 import 'package:trabalho_fiap_flutter/persistence/app_floor_db.dart';
+import 'package:trabalho_fiap_flutter/provider/theme_provider.dart';
+import 'package:provider/provider.dart';
 
 class HomePage extends StatefulWidget {
   final String title;
@@ -24,7 +25,6 @@ class _HomePageState extends State<HomePage> {
   final List<Character> characters = List<Character>();
   List<Character> charactersDB = List<Character>();
   HomeController homeController;
-  ThemeController themeController;
   Timer timer;
   double currentOpacity = 0;
   int moveTop = 250;
@@ -35,10 +35,7 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     openDataBase();
 
-    //bool result = await platform.invokeMethod('isConnected');
-
     homeController = GetIt.instance<HomeController>();
-    themeController = GetIt.instance<ThemeController>();
     timer = Timer(Duration(seconds: 3), () {
       setState(() {
         moveTop = 0;
@@ -62,6 +59,8 @@ class _HomePageState extends State<HomePage> {
 
     SystemChrome.setSystemUIOverlayStyle(
         SystemUiOverlayStyle(statusBarColor: Colors.transparent));
+
+    var currentThemeType = Provider.of<ThemeProvider>(context).currentThemeType;
 
     return Scaffold(
       backgroundColor: Colors.black,
@@ -110,10 +109,12 @@ class _HomePageState extends State<HomePage> {
             child: Icon(Icons.brush, color: Colors.white),
             backgroundColor: Colors.black,
             onTap: () async {
-              if (themeController.currentThemeType == ThemeType.dark) {
-                themeController.changeTheme(ThemeType.light);
+              if (currentThemeType == ThemeType.dark) {
+                Provider.of<ThemeProvider>(context, listen: false)
+                    .changeTheme(ThemeType.light);
               } else {
-                themeController.changeTheme(ThemeType.dark);
+                Provider.of<ThemeProvider>(context, listen: false)
+                    .changeTheme(ThemeType.dark);
               }
             },
             label: 'Mudar Tema',
