@@ -30,6 +30,7 @@ class _HomePageState extends State<HomePage> {
   int moveTop = 250;
   CharacterDao characterDao;
   static const platform = const MethodChannel('internet/sign');
+  bool isConnected = false;
 
   @override
   void initState() {
@@ -43,6 +44,8 @@ class _HomePageState extends State<HomePage> {
     });
 
     charactersDB = homeController.characters;
+    checkInternet();
+
     super.initState();
   }
 
@@ -51,6 +54,14 @@ class _HomePageState extends State<HomePage> {
         await $FloorAppDatabase.databaseBuilder('app_database.db').build();
 
     characterDao = database.characterDao;
+  }
+
+  void checkInternet() async {
+    bool result = await platform.invokeMethod('isConnected');
+
+    setState(() {
+      isConnected = result;
+    });
   }
 
   @override
@@ -135,7 +146,16 @@ class _HomePageState extends State<HomePage> {
                   height: 118,
                 ),
                 Flexible(
-                  child: buildListView(homeController),
+                  child: isConnected
+                      ? buildListView(homeController)
+                      : Container(
+                          child: Center(
+                            child: Text(
+                              "Offline",
+                              style: TextStyle(color: Colors.white),
+                            ),
+                          ),
+                        ),
                 )
               ],
             ),
@@ -144,8 +164,7 @@ class _HomePageState extends State<HomePage> {
             duration: Duration(milliseconds: 1000),
             width: MediaQuery.of(context).size.width,
             top: moveTop.toDouble(),
-            child: Image.network(
-                "https://d23.com/app/uploads/2019/07/marvel-op-2-1180w-600hIris-780x440-1563899008.jpg"),
+            child: Image.asset("images/marvel_logo.jpg"),
             onEnd: () {
               setState(() {
                 currentOpacity = 1;
@@ -199,15 +218,24 @@ class _HomePageState extends State<HomePage> {
             Center(
               child: Text(
                 item.name,
-                style: TextStyle(
-                  color: Colors.grey,
-                ),
+                style: TextStyle(fontSize: 20),
               ),
             ),
-            buildPersistButton(item, "Floor", () => checkFloorAdded(item),
-                () => addInFloor(item)),
-            buildPersistButton(item, "Firestone",
-                () => checkFirestoneAdded(item), () => addInFirestone(item)),
+            SizedBox(
+              height: 10,
+            ),
+            Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                buildPersistButton(item, "Floor", () => checkFloorAdded(item),
+                    () => addInFloor(item)),
+                buildPersistButton(
+                    item,
+                    "Firestone",
+                    () => checkFirestoneAdded(item),
+                    () => addInFirestone(item)),
+              ],
+            ),
             //buildPersistButton(item),
             SizedBox(
               height: 50,
@@ -231,10 +259,8 @@ class _HomePageState extends State<HomePage> {
         .getDocuments();
 
     if (query.documents.length > 0) {
-      print('teste verdade');
       return true;
     } else {
-      print('teste falso');
       return false;
     }
   }
@@ -287,25 +313,39 @@ class _HomePageState extends State<HomePage> {
     Function onPressedEvent,
   ) {
     Future<bool> callAsyncFetch() => actionF();
-    return Container(
-      margin: EdgeInsets.only(left: 10, right: 10),
-      height: 40,
-      width: 100,
-      child: RaisedButton(
-        child: FutureBuilder(
-          future: callAsyncFetch(),
-          builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
-            if (snapshot.hasData) {
-              return snapshot.data
-                  ? Text("Remover do $label")
-                  : Text("Adicionar ao $label");
-            } else {
-              return Text("Erro");
-            }
-          },
-        ),
-        onPressed: onPressedEvent,
+    return RaisedButton(
+      padding: const EdgeInsets.all(0.0),
+      child: FutureBuilder(
+        future: callAsyncFetch(),
+        builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
+          if (snapshot.hasData) {
+            return snapshot.data
+                ? buttonLayout("Remover do $label")
+                : buttonLayout("Adicionar ao $label");
+          } else {
+            return buttonLayout("Carregando...");
+          }
+        },
       ),
+      onPressed: onPressedEvent,
     );
   }
+}
+
+Widget buttonLayout(String label) {
+  return Container(
+    padding: const EdgeInsets.all(10.0),
+    decoration: const BoxDecoration(
+      gradient: LinearGradient(
+        colors: <Color>[
+          Color(0xFFd40441),
+          Color(0xFFff0a4d),
+        ],
+      ),
+    ),
+    child: Text(
+      label,
+      style: TextStyle(color: Colors.white),
+    ),
+  );
 }
