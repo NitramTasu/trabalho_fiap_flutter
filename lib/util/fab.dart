@@ -15,18 +15,18 @@ class FAB extends StatelessWidget {
         animatedIconTheme: IconThemeData(size: 22.0),
         children: [
           SpeedDialChild(
-            child: Icon(Icons.accessibility, color: Colors.white),
-            backgroundColor: Colors.deepOrange,
+            child: Image.asset("images/fire.png"),
+            backgroundColor: Colors.black,
             onTap: () {
               Navigator.pushNamed(context, "/firestore");
             },
             label: 'Salvos no Firestone',
             labelStyle:
                 TextStyle(fontWeight: FontWeight.w500, color: Colors.white),
-            labelBackgroundColor: Colors.deepOrangeAccent,
+            labelBackgroundColor: Colors.black,
           ),
           SpeedDialChild(
-            child: Icon(Icons.brush, color: Colors.white),
+            child: Image.asset("images/server.png"),
             backgroundColor: Colors.black,
             onTap: () {
               Navigator.pushNamed(context, "/floor");
@@ -37,7 +37,7 @@ class FAB extends StatelessWidget {
             labelBackgroundColor: Colors.black,
           ),
           SpeedDialChild(
-            child: Icon(Icons.brush, color: Colors.white),
+            child: Image.asset("images/brush.png"),
             backgroundColor: Colors.black,
             onTap: () async {
               if (currentThemeType == ThemeType.dark) {
