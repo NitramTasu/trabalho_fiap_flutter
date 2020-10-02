@@ -10,6 +10,7 @@ import 'package:trabalho_fiap_flutter/dao/characterDao.dart';
 import 'package:trabalho_fiap_flutter/models/character.dart';
 import 'package:trabalho_fiap_flutter/mobx/home_controller.dart';
 import 'package:trabalho_fiap_flutter/persistence/app_floor_db.dart';
+import 'package:trabalho_fiap_flutter/util/fab.dart';
 
 class FirestorePage extends StatefulWidget {
   final String title;
@@ -37,30 +38,7 @@ class _FirestorePageState extends State<FirestorePage> {
 
     return Scaffold(
       backgroundColor: Colors.black,
-      floatingActionButton: SpeedDial(
-        animatedIcon: AnimatedIcons.menu_close,
-        animatedIconTheme: IconThemeData(size: 22.0),
-        children: [
-          SpeedDialChild(
-            child: Icon(Icons.accessibility, color: Colors.white),
-            backgroundColor: Colors.deepOrange,
-            onTap: () => print('Salvos no Firestone'),
-            label: 'Salvos no Firestone',
-            labelStyle:
-                TextStyle(fontWeight: FontWeight.w500, color: Colors.white),
-            labelBackgroundColor: Colors.deepOrangeAccent,
-          ),
-          SpeedDialChild(
-            child: Icon(Icons.brush, color: Colors.white),
-            backgroundColor: Colors.black,
-            onTap: () => print('Salvos no Floor'),
-            label: 'Salvos no Floor',
-            labelStyle:
-                TextStyle(fontWeight: FontWeight.w500, color: Colors.white),
-            labelBackgroundColor: Colors.black,
-          ),
-        ],
-      ),
+      floatingActionButton: FAB(),
       body: buildListView(),
     );
   }
@@ -84,7 +62,6 @@ class _FirestorePageState extends State<FirestorePage> {
 
   Card buildCharacterItem(DocumentSnapshot data) {
     final item = Character.fromSnapshot(data);
-    print('item ' + item.urlImage);
     return Card(
         margin: EdgeInsets.only(top: 30),
         elevation: 4,

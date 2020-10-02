@@ -12,6 +12,7 @@ import 'package:trabalho_fiap_flutter/mobx/home_controller.dart';
 import 'package:trabalho_fiap_flutter/persistence/app_floor_db.dart';
 import 'package:trabalho_fiap_flutter/provider/theme_provider.dart';
 import 'package:provider/provider.dart';
+import 'package:trabalho_fiap_flutter/util/fab.dart';
 
 class HomePage extends StatefulWidget {
   final String title;
@@ -75,66 +76,7 @@ class _HomePageState extends State<HomePage> {
 
     return Scaffold(
       backgroundColor: Colors.black,
-      floatingActionButton: SpeedDial(
-        animatedIcon: AnimatedIcons.menu_close,
-        backgroundColor: Colors.red,
-        animatedIconTheme: IconThemeData(size: 22.0),
-        children: [
-          SpeedDialChild(
-            child: Icon(Icons.accessibility, color: Colors.white),
-            backgroundColor: Colors.deepOrange,
-            onTap: () {
-              print('Salvos no Firestone');
-              Navigator.pushNamed(context, "/firestore");
-            },
-            label: 'Salvos no Firestone',
-            labelStyle:
-                TextStyle(fontWeight: FontWeight.w500, color: Colors.white),
-            labelBackgroundColor: Colors.deepOrangeAccent,
-          ),
-          SpeedDialChild(
-            child: Icon(Icons.brush, color: Colors.white),
-            backgroundColor: Colors.black,
-            onTap: () {
-              print('Salvos no Floor');
-              Navigator.pushNamed(context, "/floor");
-            },
-            label: 'Salvos no Floor',
-            labelStyle:
-                TextStyle(fontWeight: FontWeight.w500, color: Colors.white),
-            labelBackgroundColor: Colors.black,
-          ),
-          SpeedDialChild(
-            child: Icon(Icons.brush, color: Colors.white),
-            backgroundColor: Colors.black,
-            onTap: () async {
-              bool result = await platform.invokeMethod('isConnected');
-              print('Resposta: $result');
-            },
-            label: 'Check internet',
-            labelStyle:
-                TextStyle(fontWeight: FontWeight.w500, color: Colors.white),
-            labelBackgroundColor: Colors.black,
-          ),
-          SpeedDialChild(
-            child: Icon(Icons.brush, color: Colors.white),
-            backgroundColor: Colors.black,
-            onTap: () async {
-              if (currentThemeType == ThemeType.dark) {
-                Provider.of<ThemeProvider>(context, listen: false)
-                    .changeTheme(ThemeType.light);
-              } else {
-                Provider.of<ThemeProvider>(context, listen: false)
-                    .changeTheme(ThemeType.dark);
-              }
-            },
-            label: 'Mudar Tema',
-            labelStyle:
-                TextStyle(fontWeight: FontWeight.w500, color: Colors.white),
-            labelBackgroundColor: Colors.black,
-          ),
-        ],
-      ),
+      floatingActionButton: FAB(),
       body: Stack(
         children: <Widget>[
           AnimatedOpacity(
@@ -266,8 +208,6 @@ class _HomePageState extends State<HomePage> {
   }
 
   void addInFloor(Character item) {
-    print('Salvo no Floor');
-
     characterDao.findCharacterById(item.characterId).then((character) {
       if (character == null) {
         characterDao.insertCharacter(item);
@@ -279,7 +219,6 @@ class _HomePageState extends State<HomePage> {
   }
 
   void addInFirestone(Character item) {
-    print('Salvo no Firestore');
     CollectionReference characters =
         Firestore.instance.collection('characters');
 
@@ -289,7 +228,6 @@ class _HomePageState extends State<HomePage> {
       'description': item.description,
       'urlImage': item.urlImage,
     }).then((value) {
-      print("Character Added");
       setState(() {});
     }).catchError((error) => print("Failed to add character: $error"));
   }
@@ -302,8 +240,8 @@ class _HomePageState extends State<HomePage> {
         .add({
           'description': item.description, // John Doe
         })
-        .then((value) => print("User Added"))
-        .catchError((error) => print("Failed to add user: $error"));
+        .then((value) => print("Character Added"))
+        .catchError((error) => print("Failed to add character: $error"));
   }
 
   Widget buildPersistButton(
