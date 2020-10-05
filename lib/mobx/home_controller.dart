@@ -10,22 +10,8 @@ class HomeController = _HomeBase with _$HomeController;
 
 abstract class _HomeBase with Store {
   HomeRepository homeRepository = new HomeRepository(Dio());
-
-  @observable
-  int value = 0;
-
   @observable
   ObservableList<Character> characters = ObservableList.of([]);
-
-  @action
-  void increment() {
-    value++;
-  }
-
-  // @action
-  // void getCharacterList() {
-  //   homeRepository.getCharacterList().then((data) => {characters = data});
-  // }
 
   Future<List<Character>> getCharacterList() {
     return homeRepository.getCharacterSimpleList();
