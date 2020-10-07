@@ -200,6 +200,14 @@ class _HomePageState extends State<HomePage> {
         .where('characterId', isEqualTo: item.characterId)
         .getDocuments();
 
+    // collection.document(item.documentID).get().then((onValue) {
+    //   print("existe? " + onValue.exists.toString());
+    //   return onValue.exists;
+    // }).catchError((onError) {
+    //   print("deu erro " + onError.toString());
+    //   return false;
+    // });
+
     if (query.documents.length > 0) {
       return true;
     } else {
@@ -218,18 +226,32 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
-  void addInFirestone(Character item) {
-    CollectionReference characters =
+  void addInFirestone(Character item) async {
+    CollectionReference collection =
         Firestore.instance.collection('characters');
 
-    characters.add({
-      'characterId': item.characterId,
-      'name': item.name,
-      'description': item.description,
-      'urlImage': item.urlImage,
-    }).then((value) {
-      setState(() {});
-    }).catchError((error) => print("Failed to add character: $error"));
+    QuerySnapshot query = await collection
+        .where('characterId', isEqualTo: item.characterId)
+        .getDocuments();
+
+    if (query.documents.length > 0) {
+      collection
+          .document(query.documents.first.documentID)
+          .get()
+          .then((currentCharacter) {
+        collection.document(currentCharacter.documentID).delete();
+      });
+    } else {
+      collection.add({
+        'characterId': item.characterId,
+        'name': item.name,
+        'description': item.description,
+        'urlImage': item.urlImage,
+      }).then((value) {
+        print("adicionou " + value.documentID);
+        setState(() {});
+      }).catchError((error) => print("Failed to add character: $error"));
+    }
   }
 
   void removeFromFirestone(Character item) {
@@ -237,20 +259,19 @@ class _HomePageState extends State<HomePage> {
         Firestore.instance.collection('characters');
 
     characters
-        .add({
-          'description': item.description, // John Doe
-        })
-        .then((value) => print("Character Added"))
-        .catchError((error) => print("Failed to add character: $error"));
+        .document(item.documentID)
+        .delete()
+        .then((value) => print("User Deleted"))
+        .catchError((error) => print("Failed to delete user: $error"));
   }
 
   Widget buildPersistButton(
     Character item,
     String label,
-    Function actionF,
+    Function actionToCheck,
     Function onPressedEvent,
   ) {
-    Future<bool> callAsyncFetch() => actionF();
+    Future<bool> callAsyncFetch() => actionToCheck();
     return RaisedButton(
       padding: const EdgeInsets.all(0.0),
       child: FutureBuilder(
@@ -261,7 +282,7 @@ class _HomePageState extends State<HomePage> {
                 ? buttonLayout("Remover do $label")
                 : buttonLayout("Adicionar ao $label");
           } else {
-            return buttonLayout("Carregando...");
+            return buttonLayout("Adicionar ao $label");
           }
         },
       ),

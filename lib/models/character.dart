@@ -9,9 +9,7 @@ class Character {
   String name;
   String description;
   String urlImage;
-
-  @ignore
-  DocumentReference reference;
+  String documentID;
 
   Character({this.id, this.name, this.description, this.urlImage});
 
@@ -30,12 +28,12 @@ class Character {
         'thumbnail': urlImage,
       };
 
-  Character.fromMap(Map<String, dynamic> map, {this.reference})
+  Character.fromMap(Map<String, dynamic> map, {this.documentID})
       : id = map['characterId'],
         name = map['name'],
         description = map['description'],
         urlImage = map['urlImage'];
 
   Character.fromSnapshot(DocumentSnapshot snapshot)
-      : this.fromMap(snapshot.data, reference: snapshot.reference);
+      : this.fromMap(snapshot.data, documentID: snapshot.reference.documentID);
 }
