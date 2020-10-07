@@ -200,14 +200,6 @@ class _HomePageState extends State<HomePage> {
         .where('characterId', isEqualTo: item.characterId)
         .getDocuments();
 
-    // collection.document(item.documentID).get().then((onValue) {
-    //   print("existe? " + onValue.exists.toString());
-    //   return onValue.exists;
-    // }).catchError((onError) {
-    //   print("deu erro " + onError.toString());
-    //   return false;
-    // });
-
     if (query.documents.length > 0) {
       return true;
     } else {
@@ -248,7 +240,6 @@ class _HomePageState extends State<HomePage> {
         'description': item.description,
         'urlImage': item.urlImage,
       }).then((value) {
-        print("adicionou " + value.documentID);
         setState(() {});
       }).catchError((error) => print("Failed to add character: $error"));
     }
