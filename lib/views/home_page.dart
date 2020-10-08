@@ -173,9 +173,9 @@ class _HomePageState extends State<HomePage> {
                     () => addInFloor(item)),
                 buildPersistButton(
                     item,
-                    "Firestone",
-                    () => checkFirestoneAdded(item),
-                    () => addInFirestone(item)),
+                    "Firestore",
+                    () => checkFirestoreAdded(item),
+                    () => addInFirestore(item)),
               ],
             ),
             //buildPersistButton(item),
@@ -192,7 +192,7 @@ class _HomePageState extends State<HomePage> {
     return character != null;
   }
 
-  Future<bool> checkFirestoneAdded(Character item) async {
+  Future<bool> checkFirestoreAdded(Character item) async {
     CollectionReference collection =
         Firestore.instance.collection('characters');
 
@@ -218,7 +218,7 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
-  void addInFirestone(Character item) async {
+  void addInFirestore(Character item) async {
     CollectionReference collection =
         Firestore.instance.collection('characters');
 
@@ -245,7 +245,7 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
-  void removeFromFirestone(Character item) {
+  void removeFromFirestore(Character item) {
     CollectionReference characters =
         Firestore.instance.collection('characters');
 

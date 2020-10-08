@@ -20,7 +20,7 @@ class FAB extends StatelessWidget {
             onTap: () {
               Navigator.pushNamed(context, "/firestore");
             },
-            label: 'Salvos no Firestone',
+            label: 'Salvos no Firestore',
             labelStyle:
                 TextStyle(fontWeight: FontWeight.w500, color: Colors.white),
             labelBackgroundColor: Colors.black,
